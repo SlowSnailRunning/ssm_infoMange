@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="crm.mapper.CustomerMapperCustom">
+	 <resultMap id="BaseResultMap" type="crm.po.Customer" >
+		<id column="cust_id" property="custId" jdbcType="BIGINT" />
+		<result column="cust_name" property="custName" jdbcType="VARCHAR" />
+		<result column="cust_user_id" property="custUserId" jdbcType="BIGINT" />
+		<result column="cust_create_id" property="custCreateId" jdbcType="BIGINT" />
+		<result column="cust_source" property="custSource" jdbcType="VARCHAR" />
+		<result column="cust_industry" property="custIndustry" jdbcType="VARCHAR" />
+		<result column="cust_level" property="custLevel" jdbcType="VARCHAR" />
+		<result column="cust_linkman" property="custLinkman" jdbcType="VARCHAR" />
+		<result column="cust_phone" property="custPhone" jdbcType="VARCHAR" />
+		<result column="cust_mobile" property="custMobile" jdbcType="VARCHAR" />
+		<result column="cust_zipcode" property="custZipcode" jdbcType="VARCHAR" />
+		<result column="cust_address" property="custAddress" jdbcType="VARCHAR" />
+		<result column="cust_createtime" property="custCreatetime" jdbcType="TIMESTAMP" />
+	 </resultMap>
+	 
+	 <sql id="customer_where">
+		<where>
+		    <if test="custName != null and custName != ''">
+				and a.cust_name like '%${custName}%'
+			</if>
+			<if test="custSource != null and custSource != ''">
+				and a.cust_source=#{custSource}
+			</if>
+			<if test="custIndustry != null and custIndustry != ''">
+				and a.cust_industry=#{custIndustry}
+			</if>
+			<if test="custLevel != null and custLevel != ''">
+				and a.cust_level=#{custLevel}
+			</if>
+		</where>
+	</sql>
+	 
+	<!-- 搜索用户信息 -->
+	<select id="findCustomerByMsg" parameterType="crm.po.QueryVo" resultMap="BaseResultMap">
+		select a.cust_id,a.cust_name, b.dict_item_name cust_source, c.dict_item_name cust_industry, 
+			d.dict_item_name cust_level,a.cust_phone,a.cust_mobile, a.cust_linkman, a.cust_zipcode, 
+			a.cust_address, a.cust_createtime
+		from customer a
+		left join base_dict b on a.cust_source = b.dict_id
+		left join base_dict c on a.cust_industry = c.dict_id
+		left join base_dict d on a.cust_level = d.dict_id
+		
+		<include refid="customer_where"></include>
+		limit #{start}, #{size}
+	</select>
+	
+	<!-- 搜索用户信息条数 -->
+	<select id="findCustomerByVoCount" parameterType="crm.po.QueryVo" resultType="int">
+		select count(*)
+		from customer a
+		left join base_dict b on a.cust_source = b.dict_id
+		left join base_dict c on a.cust_industry = c.dict_id
+		left join base_dict d on a.cust_level = d.dict_id
+		<include refid="customer_where"></include>
+	</select>
+</mapper>
