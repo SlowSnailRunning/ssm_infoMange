@@ -1,6 +1,7 @@
 package crm.controller;
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -99,4 +100,5 @@ public class SearchController {
 		int i=serviceImpl.deleteCustormer(id);
 		return "delete "+i;
 	}
+	
 }
